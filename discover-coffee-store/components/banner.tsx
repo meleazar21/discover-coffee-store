@@ -17,7 +17,9 @@ const Banner = (props: IBanner) => {
                 <span className={styles.title1}>Coffee</span><span className={styles.title2}>Finder</span>
             </h1>
             <p className={styles.subTitle}>Discover your local coffee shops!</p>
+            <div className={styles.buttonWrapper}>
             <button className={styles.button} onClick={buttonHandle}>{props.buttonText}</button>
+            </div>
         </div>
     )
 }

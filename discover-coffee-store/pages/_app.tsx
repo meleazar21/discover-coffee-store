@@ -5,9 +5,6 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />
-      <footer>
-        <p>© 2023 meleazar</p>
-      </footer>
     </>
   )   
 }

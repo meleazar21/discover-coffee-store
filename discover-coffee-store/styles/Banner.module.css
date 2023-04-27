@@ -33,6 +33,8 @@
   
   .buttonWrapper {
     margin-top: 1.25rem;
+    position: relative;
+    z-index: 2;
   }
   
   .button {
