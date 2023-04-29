@@ -1,4 +1,4 @@
-import styles from "../styles/Banner.module.css";
+import styles from "../styles/banner.module.css";
 
 interface IBanner {
     buttonText: string;
