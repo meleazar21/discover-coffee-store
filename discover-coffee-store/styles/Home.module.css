@@ -1,14 +1,24 @@
 .container {
-  margin-bottom: 14rem /* 224px */;
+  margin-bottom: 14rem
+    /* 224px */
+  ;
 }
 
 .main {
-  margin-top: 2.5rem /* 40px */;
+  margin-top: 2.5rem
+    /* 40px */
+  ;
   margin-left: auto;
   margin-right: auto;
-  max-width: 72rem /* 1152px */;
-  padding-left: 1rem /* 16px */;
-  padding-right: 1rem /* 16px */;
+  max-width: 72rem
+    /* 1152px */
+  ;
+  padding-left: 1rem
+    /* 16px */
+  ;
+  padding-right: 1rem
+    /* 16px */
+  ;
 }
 
 .heroImage {
@@ -36,6 +46,10 @@
   color: var(--text-white-100)
 }
 
+.sectionWrapper {
+  margin-top: 5rem;
+}
+
 /** Breakpoints:
   sm: min-width: 640px;
   md: min-width: 768px;
@@ -46,15 +60,26 @@
 
 @media (min-width: 640px) {
   .container {
-    padding-left: 1rem /* 16px */;
-    padding-right: 1rem /* 16px */;
+    padding-left: 1rem
+      /* 16px */
+    ;
+    padding-right: 1rem
+      /* 16px */
+    ;
   }
 
   .main {
-    margin-top: 3rem /* 48px */;
-    padding-left: 1.5rem /* 24px */;
-    padding-right: 1.5rem /* 24px */;
+    margin-top: 3rem
+      /* 48px */
+    ;
+    padding-left: 1.5rem
+      /* 24px */
+    ;
+    padding-right: 1.5rem
+      /* 24px */
+    ;
   }
+
   .cardLayout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -62,17 +87,24 @@
 
 @media (min-width: 768px) {
   .container {
-    padding-left: 2.5rem /* 40px */;
-    padding-right: 2.5rem /* 40px */;
+    padding-left: 2.5rem
+      /* 40px */
+    ;
+    padding-right: 2.5rem
+      /* 40px */
+    ;
   }
 
   .main {
-    margin-top: 4rem /* 64px */;
+    margin-top: 4rem
+      /* 64px */
+    ;
   }
 
-  .heroImage{
+  .heroImage {
     right: 15%;
   }
+
   .cardLayout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -80,17 +112,30 @@
 
 @media (min-width: 1024px) {
   .container {
-    padding-left: 2.5rem /* 40px */;
-    padding-right: 2.5rem /* 40px */;
+    padding-left: 2.5rem
+      /* 40px */
+    ;
+    padding-right: 2.5rem
+      /* 40px */
+    ;
   }
+
   .main {
-    margin-top: 5rem /* 80px */;
-    padding-left: 2rem /* 32px */;
-    padding-right: 2rem /* 32px */;
+    margin-top: 5rem
+      /* 80px */
+    ;
+    padding-left: 2rem
+      /* 32px */
+    ;
+    padding-right: 2rem
+      /* 32px */
+    ;
   }
-  .heroImage{
+
+  .heroImage {
     right: 15%;
   }
+
   .cardLayout {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

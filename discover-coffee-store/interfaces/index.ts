@@ -1,2 +1,2 @@
-export * from './ICoffeStore';
+export * from './ICoffeeStore';
 export * from './IParam';
