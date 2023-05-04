@@ -51,17 +51,8 @@ const CoffeeStore = (initialProps: IGetStaticProps) => {
     const id = router.query.id;
     const { state: { coffeeStores } } = useContext(StoreContext);
 
-
-    if (router.isFallback) return <div>Loading....</div>
-
-    const { name, location, imageUrl } = coffeeStore;
-
-    const handleUpvoteButton = () => {
-        console.log("Handle Button")
-    }
-
     useEffect(() => {
-        if (isEmpty(initialProps.coffeeStore)) {
+        if (isEmpty(initialProps.coffeeStore || {})) {
             if (coffeeStores.length > 0) {
                 const findCoffeStoreById = coffeeStores.find((cs: ICoffeeStore) => cs.fsq_id === id);
                 if (!findCoffeStoreById) return;
@@ -69,6 +60,14 @@ const CoffeeStore = (initialProps: IGetStaticProps) => {
             }
         }
     }, [id])
+
+    if (router.isFallback) return <div>Loading....</div>
+
+    const { name, location, imageUrl } = coffeeStore || {};
+
+    const handleUpvoteButton = () => {
+        console.log("Handle Button")
+    }
 
     return (
         <div className={styles.layout}>

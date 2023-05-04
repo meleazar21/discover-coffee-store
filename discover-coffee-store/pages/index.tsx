@@ -39,7 +39,16 @@ export default function Home(props: IGetStaticProps) {
       if (!latlong) return;
 
       try {
-        const nearbyPlaces = await placesService.getPlaces(latlong);
+        /*
+        Making request to external api using the service class
+        const nearbyPlaces = await placesService.getPlaces(latlong,40);
+        */
+        /* Making request using serverless function to call own api located
+           in the api folder of this nextjs project.
+        */
+        const response = await fetch(`/api/getCoffeeStoreByLocation?latLong=${latlong}&limit=${30}`);
+        const nearbyPlaces = await response.json();
+
         dispatch({
           type: ActionType.SET_COFFEE_STORES,
           payload: nearbyPlaces
