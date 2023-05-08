@@ -11,6 +11,7 @@ import { placesService } from '@/services/places.service';
 import { useContext, useEffect, useState } from 'react';
 import { isEmpty } from '@/utils';
 import { StoreContext } from '@/store/store-context';
+import { Headers } from '@/utils/headers.util';
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const params = context.params as IParam;
@@ -46,28 +47,56 @@ interface IGetStaticProps {
 const CoffeeStore = (initialProps: IGetStaticProps) => {
 
     const [coffeeStore, setCoffeeStores] = useState(initialProps.coffeeStore);
+    const [votingCount, setVotingCount] = useState<number>(0);
 
     const router = useRouter();
     const id = router.query.id;
     const { state: { coffeeStores } } = useContext(StoreContext);
 
+    const handleCreateCoffeeStore = async (record: ICoffeeStore) => {
+        try {
+            const data = {
+                id: record.fsq_id,
+                name: record.name,
+                address: record.location.address || "",
+                neighbourd: record.location.region || "",
+                voting: 0
+            };
+            const response = await fetch('/api/createCoffeeStore', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const dbCoffeeStores = await response.json();
+            console.log(dbCoffeeStores);
+
+        } catch (err) {
+
+        }
+    }
+
+    const handleUpVoteButton = () => {
+        setVotingCount(preveState => preveState + 1);
+    }
+
     useEffect(() => {
         if (isEmpty(initialProps.coffeeStore || {})) {
             if (coffeeStores.length > 0) {
-                const findCoffeStoreById = coffeeStores.find((cs: ICoffeeStore) => cs.fsq_id === id);
-                if (!findCoffeStoreById) return;
-                setCoffeeStores(findCoffeStoreById);
+                const coffeeStoreFromContext = coffeeStores.find((cs: ICoffeeStore) => cs.fsq_id === id);
+                if (!coffeeStoreFromContext) return;
+                setCoffeeStores(coffeeStoreFromContext);
+                handleCreateCoffeeStore(coffeeStoreFromContext)
+            } else {
+                handleCreateCoffeeStore(initialProps.coffeeStore);
             }
         }
-    }, [id])
+    }, [id, initialProps.coffeeStore])
 
     if (router.isFallback) return <div>Loading....</div>
 
     const { name, location, imageUrl } = coffeeStore || {};
-
-    const handleUpvoteButton = () => {
-        console.log("Handle Button")
-    }
 
     return (
         <div className={styles.layout}>
@@ -101,10 +130,10 @@ const CoffeeStore = (initialProps: IGetStaticProps) => {
                     </div>
                     <div className={styles.iconWrapper}>
                         <Image alt='icon-coffee' src="/static/icons/star.svg" width="24" height="24" />
-                        <p className={styles.text}>1</p>
+                        <p className={styles.text}>{votingCount}</p>
                     </div>
 
-                    <button className={styles.upvoteButton} onClick={handleUpvoteButton}>Up Vote!</button>
+                    <button className={styles.upvoteButton} onClick={handleUpVoteButton}>Up Vote!</button>
                 </div>
             </div>
         </div>
