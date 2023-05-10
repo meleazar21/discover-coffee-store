@@ -10,6 +10,7 @@ import useTrackLocation from '@/hooks/use-track-location';
 import { useContext, useEffect, useState } from 'react';
 import { ActionType } from '@/state/action-types';
 import { StoreContext } from '@/store/store-context';
+import { API_PLACES_BUSSINESS_TYPE, HIDE_MANAGUA_STORES } from '@/constants/commonStrings.contants';
 
 interface IGetStaticProps {
   coffeeStore: Array<ICoffeeStore>;
@@ -64,7 +65,7 @@ export default function Home(props: IGetStaticProps) {
   return (
     <>
       <Head>
-        <title>Coffee Finder</title>
+        <title>{`${API_PLACES_BUSSINESS_TYPE} Finder`}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
@@ -103,7 +104,7 @@ export default function Home(props: IGetStaticProps) {
             </div>
           </div>
         )}
-        {props.coffeeStore.length > 0 && (
+        {HIDE_MANAGUA_STORES !== 'true' && props.coffeeStore.length > 0 && (
           <div className={styles.sectionWrapper}>
             <h2 className={styles.heading2}>Managua Coffee Stores</h2>
             <div className={styles.cardLayout}>
