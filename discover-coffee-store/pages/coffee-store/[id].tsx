@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import coffeStoreData from "../../data/coffee-stores.json";
 import { ICoffeeStore, IParam } from '@/interfaces';
 import Head from 'next/head';
 import styles from "../../styles/coffe-store.module.css"
@@ -11,13 +10,13 @@ import { placesService } from '@/services/places.service';
 import { useContext, useEffect, useState } from 'react';
 import { isEmpty } from '@/utils';
 import { StoreContext } from '@/store/store-context';
-import { Headers } from '@/utils/headers.util';
+import useSWR from 'swr';
+import { fetcher } from '@/services/swr.service';
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const params = context.params as IParam;
     const data = await placesService.getPlaces();
     const findCoffeStoreById = data.find((cs: ICoffeeStore) => cs.fsq_id === params.id);
-    console.log('findCoffeStoreById: ' + findCoffeStoreById);
     return {
         props: {
             coffeeStore: findCoffeStoreById ? findCoffeStoreById : {}
@@ -45,17 +44,18 @@ interface IGetStaticProps {
 }
 
 const CoffeeStore = (initialProps: IGetStaticProps) => {
-
-    const [coffeeStore, setCoffeeStores] = useState(initialProps.coffeeStore);
-    const [votingCount, setVotingCount] = useState<number>(0);
-
     const router = useRouter();
     const id = router.query.id;
+
+    const [coffeeStore, setCoffeeStores] = useState(initialProps.coffeeStore || {});
+    const [votingCount, setVotingCount] = useState<number>(0);
     const { state: { coffeeStores } } = useContext(StoreContext);
+
+    const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher)
 
     const handleCreateCoffeeStore = async (record: ICoffeeStore) => {
         try {
-            const data = {
+            const obj = {
                 id: record.fsq_id,
                 name: record.name,
                 address: record.location.address || "",
@@ -67,36 +67,63 @@ const CoffeeStore = (initialProps: IGetStaticProps) => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(obj)
             });
             const dbCoffeeStores = await response.json();
-            console.log(dbCoffeeStores);
-
         } catch (err) {
 
         }
     }
 
-    const handleUpVoteButton = () => {
-        setVotingCount(preveState => preveState + 1);
+    const handleUpVoteButton = async () => {
+        try {
+            const response = await fetch('/api/updateCoffeeStore', {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id })
+            });
+            const dbCoffeeStores = await response.json();
+            if (dbCoffeeStores && dbCoffeeStores.length > 0) {
+                let counting = votingCount + 1;
+                setVotingCount(counting);
+            }
+        } catch (error) {
+            console.log("Error incrementing the voting count: ", error);
+        }
     }
 
     useEffect(() => {
-        if (isEmpty(initialProps.coffeeStore || {})) {
-            if (coffeeStores.length > 0) {
-                const coffeeStoreFromContext = coffeeStores.find((cs: ICoffeeStore) => cs.fsq_id === id);
-                if (!coffeeStoreFromContext) return;
-                setCoffeeStores(coffeeStoreFromContext);
-                handleCreateCoffeeStore(coffeeStoreFromContext)
-            } else {
-                handleCreateCoffeeStore(initialProps.coffeeStore);
-            }
+        if (data && data.length > 0) {
+            setVotingCount(data[0].voting);
         }
-    }, [id, initialProps.coffeeStore])
+
+    }, [data])
+
+
+    useEffect(() => {
+        if (isEmpty(initialProps.coffeeStore)) {
+            if (coffeeStores.length > 0) {
+                const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
+                    return coffeeStore.fsq_id.toString() === id; //dynamic id
+                });
+                setCoffeeStores(findCoffeeStoreById as ICoffeeStore);
+                handleCreateCoffeeStore(findCoffeeStoreById as ICoffeeStore);
+            }
+        } else {
+            // SSG
+            handleCreateCoffeeStore(initialProps.coffeeStore);
+        }
+    }, [id, initialProps.coffeeStore, coffeeStores]);
+
+
 
     if (router.isFallback) return <div>Loading....</div>
 
     const { name, location, imageUrl } = coffeeStore || {};
+
+    if (error) return <div>Something went wrong retrieving coffee store page</div>
 
     return (
         <div className={styles.layout}>

@@ -7,5 +7,6 @@ export interface IATFields {
     voting: number;
 }
 export interface IATCoffeeStore {
+    id: string;
     fields: IATFields;
 }
