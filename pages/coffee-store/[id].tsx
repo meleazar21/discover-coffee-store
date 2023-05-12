@@ -129,6 +129,7 @@ const CoffeeStore = (initialProps: IGetStaticProps) => {
         <div className={styles.layout}>
             <Head>
                 <title>{name}</title>
+                <meta name="description" content={`${name} coffee stores`}></meta>
             </Head>
             <div className={styles.container}>
                 <div className={styles.col1}>
